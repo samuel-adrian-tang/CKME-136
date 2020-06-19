@@ -1,2 +1,55 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+#CKME 136 - Laptimes at the Nurburgring
+
+#import data
+getwd() 
+setwd("C:\\Users\\Samuel Tang\\Desktop\\CKME 136\\Dataset")
+cleandata <- read.csv("lap_times (edited).csv")
+
+#explore data
+str(cleandata)
+head(cleandata) 
+tail(cleandata)
+nrow(cleandata)
+ncol(cleandata)
+
+#basic summary and visualization, prelim analysis, w/ Time
+summary(cleandata)
+plot(cleandata$Time)
+plot(cleandata$Position, cleandata$Time) #Direct relationship
+plot(cleandata$Year, cleandata$Time) #weak negative relationship
+plot(cleandata$Make, cleandata$Time) #no clear relationship
+plot(cleandata$Model, cleandata$Time) #no clear relationship
+plot(cleandata$Weight, cleandata$Time) #no clear relationship
+plot(cleandata$Turbocharger, cleandata$Time) #no clear relationship
+plot(cleandata$Supercharger, cleandata$Time) #no clear relationship
+plot(cleandata$Hybrid, cleandata$Time) #no clear relationship, only two examples
+plot(cleandata$Powertrain, cleandata$Time) #V8 most popular
+plot(cleandata$Engine_Layout, cleandata$Time) #no clear relationship
+plot(cleandata$Horsepower, cleandata$Time) #weak negative trend
+plot(cleandata$Torque, cleandata$Time) #weak negative trend
+plot(cleandata$Drivetrain, cleandata$Time) #RWD most popular
+plot(cleandata$Body_Style, cleandata$Time) #Coupe is most popular
+plot(cleandata$Manual_Transmission, cleandata$Time) #Manual transmission may increase time, investigate more
+plot(cleandata$KGperHP, cleandata$Time) #Positive trend
+plot(cleandata$Cylinders, cleandata$Time) #Weak negative trend
+
+#basic summary and visualization, prelim analysis, w/ Position
+plot(cleandata$Time, cleandata$Position) #Direct relationship
+plot(cleandata$Year, cleandata$Position) #weak negative relationship
+plot(cleandata$Make, cleandata$Position) #no clear relationship
+plot(cleandata$Model, cleandata$Position) #no clear relationship
+plot(cleandata$Weight, cleandata$Position) #weak positive relationship
+plot(cleandata$Turbocharger, cleandata$Position) #no clear relationship
+plot(cleandata$Supercharger, cleandata$Position) #no clear relationship
+plot(cleandata$Hybrid, cleandata$Position) #no clear relationship, only two examples
+plot(cleandata$Powertrain, cleandata$Position) #V6 appears to have lowest average position
+plot(cleandata$Engine_Layout, cleandata$Position) #Mid-Engine appears to have lowest average position
+plot(cleandata$Horsepower, cleandata$Position) #weak negative trend
+plot(cleandata$Torque, cleandata$Position) #weak negative trend
+plot(cleandata$Drivetrain, cleandata$Position) #AWD and RWD appear to have similar effects on position
+plot(cleandata$Body_Style, cleandata$Position) #Coupe is most popular and on average perform better
+plot(cleandata$Manual_Transmission, cleandata$Position) #Manual transmission may increase position, investigate more
+plot(cleandata$KGperHP, cleandata$Position) #Positive trend
+plot(cleandata$Cylinders, cleandata$Position) #Weak negative trend
+
+mean()
