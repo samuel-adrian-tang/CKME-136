@@ -16,41 +16,41 @@ ncol(cleandata)
 summary(cleandata)
 plot(cleandata$Time)
 plot(cleandata$Position, cleandata$Time) #Direct relationship
-plot(cleandata$Year, cleandata$Time) #weak negative relationship
-plot(cleandata$Make, cleandata$Time) #no clear relationship
-plot(cleandata$Model, cleandata$Time) #no clear relationship
-plot(cleandata$Weight, cleandata$Time) #no clear relationship
-plot(cleandata$Turbocharger, cleandata$Time) #no clear relationship
-plot(cleandata$Supercharger, cleandata$Time) #no clear relationship
-plot(cleandata$Hybrid, cleandata$Time) #no clear relationship, only two examples
-plot(cleandata$Powertrain, cleandata$Time) #V8 most popular
-plot(cleandata$Engine_Layout, cleandata$Time) #no clear relationship
-plot(cleandata$Horsepower, cleandata$Time) #weak negative trend
-plot(cleandata$Torque, cleandata$Time) #weak negative trend
-plot(cleandata$Drivetrain, cleandata$Time) #RWD most popular
-plot(cleandata$Body_Style, cleandata$Time) #Coupe is most popular
-plot(cleandata$Manual_Transmission, cleandata$Time) #Manual transmission may increase time, investigate more
-plot(cleandata$KGperHP, cleandata$Time) #Positive trend
-plot(cleandata$Cylinders, cleandata$Time) #Weak negative trend
+plot(cleandata$Year, cleandata$Time) #weak negative relationship, represents other technological improvements, difficult to dissect
+plot(cleandata$Make, cleandata$Time) #no clear relationship, there is little information to glean from this variable
+plot(cleandata$Model, cleandata$Time) #no relationship, purely for the purposes of identification
+plot(cleandata$Weight, cleandata$Time) #no clear relationship - Maybe important for clusters? May be useful to group into different seqmants
+plot(cleandata$Turbocharger, cleandata$Time) #no clear relationship - must compare the three engine augmentation styles, Turbo, Super, Hybrid (Position, Time, Weight, HP, Torque)
+plot(cleandata$Supercharger, cleandata$Time) #no clear relationship - must compare the three engine augmentation styles, Turbo, Super, Hybrid (Position, Time, Weight, HP, Torque)
+plot(cleandata$Hybrid, cleandata$Time) #no clear relationship, only two examples - Need to explain advantages (torque+HP > weight?, prove by kg/hp?)
+plot(cleandata$Powertrain, cleandata$Time) #V8 most popular, investigate averages (HP, Time, Position, weight) for each group
+plot(cleandata$Engine_Layout, cleandata$Time) #no clear relationship investigate averages for each group
+plot(cleandata$Horsepower, cleandata$Time) #weak negative trend - why is it not as obvious/strong?
+plot(cleandata$Torque, cleandata$Time) #weak negative trend - why is it not as obvious/strong?
+plot(cleandata$Drivetrain, cleandata$Time) #RWD most popular, inherantly by design, AWD is heavier but better traction
+plot(cleandata$Body_Style, cleandata$Time) #Coupe is most popular, inherantly by design...lighter weight, investigate correlation between weight?
+plot(cleandata$Manual_Transmission, cleandata$Time) #Manual transmission may increase time, investigate averages for groups
+plot(cleandata$KGperHP, cleandata$Time) #Positive trend, ressembles a logarithmic function
+plot(cleandata$Cylinders, cleandata$Time) #Weak negative trend, investigate averages for each group
 
-#basic summary and visualization, prelim analysis, w/ Position
+#basic summary and visualization, prelim analysis, w/ Position (many comments similar to above, **indicates further revelation)
 plot(cleandata$Time, cleandata$Position) #Direct relationship
-plot(cleandata$Year, cleandata$Position) #weak negative relationship
+plot(cleandata$Year, cleandata$Position) #weak negative relationship, need to explain manufacturing and car cycles/generations **
 plot(cleandata$Make, cleandata$Position) #no clear relationship
 plot(cleandata$Model, cleandata$Position) #no clear relationship
-plot(cleandata$Weight, cleandata$Position) #weak positive relationship
-plot(cleandata$Turbocharger, cleandata$Position) #no clear relationship
+plot(cleandata$Weight, cleandata$Position) #no clear relationship, why? Can it be easily offset/countered? **
+plot(cleandata$Turbocharger, cleandata$Position) #no clear relationship, appears to be two clusters **
 plot(cleandata$Supercharger, cleandata$Position) #no clear relationship
 plot(cleandata$Hybrid, cleandata$Position) #no clear relationship, only two examples
-plot(cleandata$Powertrain, cleandata$Position) #V6 appears to have lowest average position
-plot(cleandata$Engine_Layout, cleandata$Position) #Mid-Engine appears to have lowest average position
+plot(cleandata$Powertrain, cleandata$Position) #V6 appears to have best average position, I4 is terrible (probably because of the cars it is paired with) **
+plot(cleandata$Engine_Layout, cleandata$Position) #Mid-Engine appears to have lowest average position, no clear picture, need summary statistics based from groups **
 plot(cleandata$Horsepower, cleandata$Position) #weak negative trend
-plot(cleandata$Torque, cleandata$Position) #weak negative trend
-plot(cleandata$Drivetrain, cleandata$Position) #AWD and RWD appear to have similar effects on position
-plot(cleandata$Body_Style, cleandata$Position) #Coupe is most popular and on average perform better
+plot(cleandata$Torque, cleandata$Position) #weak negative trend, clearer picture than horsepower **
+plot(cleandata$Drivetrain, cleandata$Position) #AWD and RWD appear to have similar effects, however, need to differentiate using weight...? **
+plot(cleandata$Body_Style, cleandata$Position) #Coupe is most popular and usually perform better (boxplot visualizations are much easier to interpret) **
 plot(cleandata$Manual_Transmission, cleandata$Position) #Manual transmission may increase position, investigate more
-plot(cleandata$KGperHP, cleandata$Position) #Positive trend
-plot(cleandata$Cylinders, cleandata$Position) #Weak negative trend
+plot(cleandata$KGperHP, cleandata$Position) #Positive trend, ressembles a logarithmic function
+plot(cleandata$Cylinders, cleandata$Position) #Weak negative trend, 6 features one major cluster, 8 features two? **
 
 
 
@@ -66,5 +66,6 @@ plot(cleandata$Cylinders, cleandata$Position) #Weak negative trend
 
 
 #Final: Interpretation and visualizations, use tableau, write report.
+#Must explain differences between time and position, time is objective and the standard of measurement, position is relative, but still important for this exercise (need to argue)
 
 
