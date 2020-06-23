@@ -52,3 +52,19 @@ plot(cleandata$Manual_Transmission, cleandata$Position) #Manual transmission may
 plot(cleandata$KGperHP, cleandata$Position) #Positive trend, ressembles a logarithmic function
 plot(cleandata$Cylinders, cleandata$Position) #Weak negative trend, 6 features one major cluster, 8 features two? **
 
+#time(convert into seconds)
+library(lubridate)
+cleandata$Mins2Secs <- period_to_seconds(ms(cleandata$Time))
+
+#subset numeric attributes to allow for correlation analysis
+allnumeric <- cleandata[,c(1,2,6:9,12,13,16:19)]
+cormatrix <- cor(allnumeric)
+#install.packages("PerformanceAnalytics")
+library(PerformanceAnalytics)
+chart.Correlation(cormatrix, method = "spearman") #spearman used to match the method used from "cor", also because the data is not normally distributed
+#according to chart, the p-values indicate Hybrid(**), Torque(**), Horsepower(**)(***), KGperHP(**), and weight(.)(*) are significant to both position and time (in seconds)
+
+
+#Do I need to convert into categorical variables? Engine layout, drivetrain, body style?
+#No to body style, that is purely manufacturer choice, also mainly for identification purposes (some cars exist in multiple body styles)
+
