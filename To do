@@ -1,6 +1,6 @@
 To Do:
 
-Need to do (immediate): Correlation between attributes --> Identification of key attributes --> Removal of unecessary attributes (dimensionality reduction)
+Need to do (immediate): Identification of key attributes --> Removal of unecessary attributes (dimensionality reduction)
 Phase 2: Ideal number of clusters, step-wise regression, add clusters as a variable --> Test the stability, accuracy/effictiveness
 Phase 3: Try to improve? Scrape additional cars, cross-validate/folds. Manually handicap/augment some variables?
 
