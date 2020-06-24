@@ -56,15 +56,28 @@ plot(cleandata$Cylinders, cleandata$Position) #Weak negative trend, 6 features o
 library(lubridate)
 cleandata$Mins2Secs <- period_to_seconds(ms(cleandata$Time))
 
+#Converting categorical variables
+#No to body style, that is purely manufacturer choice, also mainly for identification purposes (some cars exist in multiple body styles)
+cleandata$AWD = 0
+cleandata$AWD[which(grepl("AWD", cleandata$Drivetrain))] = 1
+cleandata$RWD = 0
+cleandata$RWD[which(grepl("RWD", cleandata$Drivetrain))] = 1
+cleandata$FWD = 0
+cleandata$FWD[which(grepl("FWD", cleandata$Drivetrain))] = 1
+cleandata$MidEngine = 0
+cleandata$MidEngine[which(grepl("Mid-Engine", cleandata$Engine_Layout))] = 1
+cleandata$RearEngine = 0
+cleandata$RearEngine[which(grepl("Rear-Engine", cleandata$Engine_Layout))] = 1
+cleandata$FrontEngine = 0
+cleandata$FrontEngine[which(grepl("Front-Engine", cleandata$Engine_Layout))] = 1
+
 #subset numeric attributes to allow for correlation analysis
-allnumeric <- cleandata[,c(1,2,6:9,12,13,16:19)]
-cormatrix <- cor(allnumeric)
+allnumeric <- cleandata[,c(1,2,6:9,12,13,16:25)]
+cormatrix  <- cor(allnumeric)
+
 #install.packages("PerformanceAnalytics")
 library(PerformanceAnalytics)
 chart.Correlation(cormatrix, method = "spearman") #spearman used to match the method used from "cor", also because the data is not normally distributed
-#according to chart, the p-values indicate Hybrid(**), Torque(**), Horsepower(**)(***), KGperHP(**), and weight(.)(*) are significant to both position and time (in seconds)
-
-
-#Do I need to convert into categorical variables? Engine layout, drivetrain, body style?
-#No to body style, that is purely manufacturer choice, also mainly for identification purposes (some cars exist in multiple body styles)
+#according to chart, the p-values indicate Hybrid(**), Horsepower(***), Torque(***), KGperHP(***), Cylinders(*), FWD(**), and MidEngine(*) are significant to position
+#according to chart, the p-values indicate Hybrid(***), Horsepower(***), Torque(***), KGperHP(***), Cylinders(*), AWD(*), FWD(*), and MidEngine(*) are significant to time (in seconds)
 
