@@ -1,18 +1,34 @@
 To Do:
 
-Need to do (immediate): Identification of key attributes --> Removal of unecessary attributes (dimensionality reduction)
-https://www.statisticssolutions.com/correlation-pearson-kendall-spearman/
-
-Phase 2: Ideal number of clusters, step-wise regression, add clusters as a variable --> Test the stability, accuracy/effictiveness
-Phase 3: Try to improve? Scrape additional cars, cross-validate/folds. Manually handicap/augment some variables?
-
-1.	A basic multiple linear regression (performed step-wise for dimensionality reduction).
+(x) 1.	A basic multiple linear regression (performed step-wise for dimensionality reduction).
+    A) Need to investigate comments from before (Is Supercharger actually important??? Investigate more)
 2.	Classification/clustering, the cars will be categorized into different clusters.
-3.	Classification/clustering, the cars will be categorized into different clusters. Then we will create a variable to represent the different classes/clusters. We can then apply linear regression; having accounted for cars of similar classes/archetypes.
-4.	We will apply this model to both position and time. A total of 6 models.
-5.	We may also have a recommender system, where based from the lap time desired (and some other characteristics), we can recommend specific metrics to meet that goal.
+    A) Ideal number of clusters, add clusters as a variable
+    B) Test the stability (overfitting/underfitting), accuracy/effictiveness (need 3 different measurements)
+    C) Run MLR/Stepwise testing again
+3.	Try using different modelling techniques --> 
+    A) Try to improve? Scrape additional cars, cross-validate/folds. Manually handicap/augment some variables?
+    
+    
 
+Final: Interpretation and visualizations
 
-Final: Interpretation and visualizations, use tableau, write report.
-Must explain differences between time and position, time is objective and the standard of measurement, position is relative, but still important for this exercise (need to argue)
+REPORT: Issues, decisions, tuning, process, outcome and interpretations
+Must explain differences between time and position, time is objective and the standard of measurement, position is relative <- May lead to overfitting
+Why was Spearman chosen? Parametric versus non-parametric
+    https://www.statisticssolutions.com/correlation-pearson-kendall-spearman/
+Multiple methods for feature selection, should employ more methods
+    https://www.machinelearningplus.com/machine-learning/feature-selection/
+Multiple methods for modeling, MLR, Stepwise, not linear????
+Dummy variable trap <- still want to see individual effects of each though.....Drivetrain and Engine Augmentation and Engine Layout
+Multicollinearity <- is multiple LINEAR regression the best/correct way to do this? Does it violate assumptions? Heteroskedacity
+    https://sphweb.bumc.bu.edu/otlt/MPH-Modules/BS/R/R5_Correlation-Regression/R5_Correlation-Regression4.html
+    https://www.statisticssolutions.com/assumptions-of-multiple-linear-regression/
+    https://cran.r-project.org/web/packages/olsrr/vignettes/intro.html <- use olsrr to check!!
+Why clustering? Body style, and other stuff can be useful for this.....clustering helps to capture some of the stuff that may put some cars in the same class. 
+    This is what the auto industry naturally does anyways. Allows for better comparison?
+    Not that it is apples to oranges....but more like grapefruit to oranges?
 
+TABLEAU: 
+
+POWERPOINT:
