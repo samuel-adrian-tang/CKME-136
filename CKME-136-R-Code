@@ -141,3 +141,37 @@ Borutatime <- Boruta(Mins2Secs~Year+Turbocharger+Supercharger+Hybrid+Torque+Manu
 boruta_signif <- getSelectedAttributes(Borutatime, withTentative = TRUE)
 print(boruta_signif)
 
+#----------------------------------------------------------------------#
+
+#If we compare the results of the correlation chart and the Boruta/Stepwise Regression, we are left with the variables: KGperHP (or Horsepower and Weight), Cylinders, MidEngine, these variables were significant in both tests. The following were only significant in either: Year, Torque, Hybrid, AWD, FWD.
+
+#Year is important as it captures some technological advances that are too difficult to capture with just the variables given (+)
+#Torque affects accelaration significantly, even more so than Horsepower or HPperKG, must be included (+)
+#Hybrid will not be considered as there are only two examples, there is just too limited examples (-)
+#AWD has been known to improve traction and acceleration, it will be added (+)
+#FWD will not be considered as there are only three examples, there is just too limited examples (-)
+
+#The final list of variables to be considered (at this point) will be Horsepower, Weight, Cylinders, MidEngine, Year, Torque, and AWD. A total of seven variables.
+
+#Subset Final Variables
+finalvars <- allnumeric[,c(2,3,7,8,11:13,16)]
+finalcormatrix  <- cor(finalvars)
+
+#----------------------------------------------------------------------#
+
+#Comment Investigation -
+#Cylinders (4, 6, 8, 10, 12), Drivetrain (AWD, RWD, FWD), Engine Layout (Mid, Front, Rear), need to investigate comments from before about the differences 
+#Torque, Year, Weight, Horsepower --> Is it linear?
+
+CylindersComparison <- by(allnumeric[,c(2,3,7,8,11:13,16)], allnumeric$Cylinders, summary)
+DrivetrainComparison <- by(cleandata[,c(2,6,12,13,18:20,23)], cleandata$Drivetrain, summary)
+EngineLayoutComparison <- by(cleandata[,c(2,6,12,13,18:20,23)], cleandata$Engine_Layout, summary)
+
+plot(cleandata$Year, cleandata$Mins2Secs) #Generally negative linear relation
+plot(cleandata$Weight, cleandata$Mins2Secs) #Generally positive linear relation
+plot(cleandata$Horsepower, cleandata$Mins2Secs) #Generally negative linear relation
+plot(cleandata$Torque, cleandata$Mins2Secs) #Generally negative linear relation
+
+
+
+
