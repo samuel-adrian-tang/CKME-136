@@ -1,13 +1,5 @@
 To Do:
 
-(x) 1.	A basic multiple linear regression (performed step-wise for dimensionality reduction).
-(x)     A) Need to investigate comments from before (Is Supercharger actually important??? Investigate more)
-        - Torque appears to be stronger (as it is more related to accelaration), HP is stronger for speed (top speed, maintaining speed)
-        - Year relates to other tech advances (gearboxes, suspension, aero, etc.)
-        - Weight is still important, can be used for classifying (along with other things), but very clearly impacts time
-        - Cylinders affects HP and Torque... (compare averages)
-        - Engine layout (compare averages)
-        - Drivetrain (compare averages)
 2.	Classification/clustering, the cars will be categorized into different clusters.
     A) Ideal number of clusters, add clusters as a variable
     B) Test the stability (overfitting/underfitting), accuracy/effictiveness (need 3 different measurements)
