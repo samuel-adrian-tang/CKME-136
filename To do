@@ -1,17 +1,17 @@
 To Do:
 
-(x) 1.	A basic multiple linear regression (performed step-wise for dimensionality reduction).
-    A) Need to investigate comments from before (Is Supercharger actually important??? Investigate more)
 2.	Classification/clustering, the cars will be categorized into different clusters.
     A) Ideal number of clusters, add clusters as a variable
     B) Test the stability (overfitting/underfitting), accuracy/effictiveness (need 3 different measurements)
     C) Run MLR/Stepwise testing again
 3.	Try using different modelling techniques --> 
     A) Try to improve? Scrape additional cars, cross-validate/folds. Manually handicap/augment some variables?
+    B) RESEARCH CROSS-VALIDATION METHODS
     
     
 
 Final: Interpretation and visualizations
+-----------------------------------------
 
 REPORT: Issues, decisions, tuning, process, outcome and interpretations
 Must explain differences between time and position, time is objective and the standard of measurement, position is relative <- May lead to overfitting
@@ -28,6 +28,9 @@ Multicollinearity <- is multiple LINEAR regression the best/correct way to do th
 Why clustering? Body style, and other stuff can be useful for this.....clustering helps to capture some of the stuff that may put some cars in the same class. 
     This is what the auto industry naturally does anyways. Allows for better comparison?
     Not that it is apples to oranges....but more like grapefruit to oranges?
+Clustering will help with outlier treatment, Pros and Cons of removing outliers:
+    Cars are designed and exist in extremes, it is not unusual perse to have an outlier
+    May employ traditional outlier treatment as a hypertuning operation... Must compare performance
 
 TABLEAU: 
 
