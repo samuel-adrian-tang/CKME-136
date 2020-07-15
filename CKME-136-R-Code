@@ -161,9 +161,9 @@ plot(cleandata$Torque, cleandata$Mins2Secs) #Generally negative linear relation
 #----------------------------------------------------------------------#
 
 #Basic Model, MLR with final vars
-finalvarsmodel <- lm(Mins2Secs~., finalvars)
+finalvarsmodel <- lm(Mins2Secs~Year+Weight+Horsepower+Torque+Cylinders+AWD+MidEngine, finalvars)
 summary(finalvarsmodel)
-#Most vars behaving in the expected manner, with the exception of Mid-Engine, Cylinders, Torque
+#Most vars behaving in the expected manner, with the exception of Mid-Engine, Cylinders, Torque (positive instead of negative)
 
 #Making clusters for different archetypes of cars and determining the optimal amount of clusters
 library(NbClust)
@@ -171,11 +171,15 @@ res.nbclust <- NbClust(finalvars, distance = "euclidean", min.nc = 2, max.nc = 1
 km3f <- kmeans(finalvars, centers = 3, nstart = 100)
 km3f
 finalvarscluster <- finalvars
-finalvarscluster$cluster <- km3f$cluster
+finalvarscluster$cluster1 <- km3f$cluster
+finalvarscluster$cluster2 <- 0
+finalvarscluster$cluster2[which(finalvarscluster$cluster1 == 2)] <- 1
+finalvarscluster$cluster1[which(finalvarscluster$cluster1 != 1)] <- 0
 
 #Modified Model, MLR with final vars+clusters
-finalvarsmodelcluster <- lm(Mins2Secs~., finalvarscluster)
-summary(finalvarsmodelcluster)
+finalvarsclustermodel <- lm(Mins2Secs~Year+Weight+Horsepower+Torque+Cylinders+AWD+MidEngine+cluster1+cluster2, finalvarscluster)
+summary(finalvarsclustermodel)
+#
 
 #----------------------------------------------------------------------#
 
