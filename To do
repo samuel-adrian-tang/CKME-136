@@ -1,7 +1,6 @@
 To Do:
 1.  AIC or ____ for stepwise reduction
-2.	Classification/clustering, the cars will be categorized into different clusters.
-    A) Test the stability (overfitting/underfitting), accuracy/effictiveness (need 3 different measurements)
+    A) Test the stability (overfitting/underfitting), accuracy/effectiveness (need 3 different measurements)
 3.	Try using different modelling techniques --> Random Forest, Decision Tree, etc.
     A) Try to improve? Scrape additional cars, cross-validate/folds. Manually handicap/augment some variables?
     B) RESEARCH CROSS-VALIDATION METHODS
