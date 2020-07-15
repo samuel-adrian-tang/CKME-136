@@ -135,7 +135,8 @@ print(boruta_signif)
 
 #Subset Final Variables
 finalvars <- allnumeric[,c(2,3,7,8,11:13,16)]
-finalcormatrix  <- cor(finalvars)
+finalcormatrix  <- corrplot(cor(finalvars), type = "upper", method = "number")
+
 
 #----------------------------------------------------------------------#
 
@@ -164,9 +165,28 @@ finalvarsmodel <- lm(Mins2Secs~., finalvars)
 summary(finalvarsmodel)
 #Most vars behaving in the expected manner, with the exception of Mid-Engine, Cylinders, Torque
 
-#Model Performance
+#Making clusters for different archetypes of cars and determining the optimal amount of clusters
+library(NbClust)
+res.nbclust <- NbClust(finalvars, distance = "euclidean", min.nc = 2, max.nc = 10, method = "complete", index ="all") #Three was the ideal number
+km3f <- kmeans(finalvars, centers = 3, nstart = 100)
+km3f
+finalvarscluster <- finalvars
+finalvarscluster$cluster <- km3f$cluster
 
+#Modified Model, MLR with final vars+clusters
+finalvarsmodelcluster <- lm(Mins2Secs~., finalvarscluster)
+summary(finalvarsmodelcluster)
 
 #----------------------------------------------------------------------#
 
-#Making clusters for different archetypes of cars
+#Model Performance
+
+#Basic MLR
+plot(finalvarsmodel)
+difference = predict(finalvarsmodel) - finalvars$Mins2Secs
+plot(difference)
+
+#Modified MLR w/clusters
+plot(finalvarsmodelcluster)
+differencecluster = predict(finalvarsmodelcluster) - finalvars$Mins2Secs
+plot(differencecluster)
