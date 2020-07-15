@@ -1,13 +1,22 @@
 To Do:
-
+1.  AIC or ____ for stepwise reduction
 2.	Classification/clustering, the cars will be categorized into different clusters.
-    A) Ideal number of clusters, add clusters as a variable
-    B) Test the stability (overfitting/underfitting), accuracy/effictiveness (need 3 different measurements)
-    C) Run MLR/Stepwise testing again
-3.	Try using different modelling techniques --> 
+    A) Test the stability (overfitting/underfitting), accuracy/effictiveness (need 3 different measurements)
+3.	Try using different modelling techniques --> Random Forest, Decision Tree, etc.
     A) Try to improve? Scrape additional cars, cross-validate/folds. Manually handicap/augment some variables?
     B) RESEARCH CROSS-VALIDATION METHODS
+4.  Create RMarkdown file and look at project timeline file
     
+    
+Main Research Questions?
+1. What can positively affect a car's laptime?
+A) Does Horsepower?
+B) Does Weight?
+C) Does Year?
+
+
+    
+    - use the asteriks symbol instead which could help with pair-wise (instead of plus sign)
     
 
 Final: Interpretation and visualizations

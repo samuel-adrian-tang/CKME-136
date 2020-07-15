@@ -32,25 +32,6 @@ plot(cleandata$Manual_Transmission, cleandata$Time) #Manual transmission may inc
 plot(cleandata$KGperHP, cleandata$Time) #Positive trend, ressembles a logarithmic function
 plot(cleandata$Cylinders, cleandata$Time) #Weak negative trend, investigate averages for each group
 
-#basic summary and visualization, prelim analysis, w/ Position (many comments similar to above, **indicates further revelation)
-plot(cleandata$Time, cleandata$Position) #Direct relationship
-plot(cleandata$Year, cleandata$Position) #weak negative relationship, need to explain manufacturing and car cycles/generations **
-plot(cleandata$Make, cleandata$Position) #no clear relationship
-plot(cleandata$Model, cleandata$Position) #no clear relationship
-plot(cleandata$Weight, cleandata$Position) #no clear relationship, why? Can it be easily offset/countered? **
-plot(cleandata$Turbocharger, cleandata$Position) #no clear relationship, appears to be two clusters **
-plot(cleandata$Supercharger, cleandata$Position) #no clear relationship
-plot(cleandata$Hybrid, cleandata$Position) #no clear relationship, only two examples
-plot(cleandata$Powertrain, cleandata$Position) #V6 appears to have best average position, I4 is terrible (probably because of the cars it is paired with) **
-plot(cleandata$Engine_Layout, cleandata$Position) #Mid-Engine appears to have lowest average position, no clear picture, need summary statistics based from groups **
-plot(cleandata$Horsepower, cleandata$Position) #weak negative trend
-plot(cleandata$Torque, cleandata$Position) #weak negative trend, clearer picture than horsepower **
-plot(cleandata$Drivetrain, cleandata$Position) #AWD and RWD appear to have similar effects, however, need to differentiate using weight...? **
-plot(cleandata$Body_Style, cleandata$Position) #Coupe is most popular and usually perform better (boxplot visualizations are much easier to interpret) **
-plot(cleandata$Manual_Transmission, cleandata$Position) #Manual transmission may increase position, investigate more
-plot(cleandata$KGperHP, cleandata$Position) #Positive trend, ressembles a logarithmic function
-plot(cleandata$Cylinders, cleandata$Position) #Weak negative trend, 6 features one major cluster, 8 features two? **
-
 #time(convert into seconds)
 library(lubridate)
 cleandata$Mins2Secs <- period_to_seconds(ms(cleandata$Time))
@@ -77,7 +58,6 @@ cormatrix  <- cor(allnumeric)
 #install.packages("PerformanceAnalytics")
 library(PerformanceAnalytics)
 chart.Correlation(cormatrix, method = "spearman") #spearman used to match the method used from "cor", also because the data is not normally distributed
-#according to chart, the p-values indicate Hybrid(**), Horsepower(***), Torque(***), KGperHP(***), Cylinders(*), FWD(**), and MidEngine(*) are significant to position
 #according to chart, the p-values indicate Hybrid(***), Horsepower(***), Torque(***), KGperHP(***), Cylinders(*), AWD(*), FWD(*), and MidEngine(*) are significant to time (in seconds)
 
 #----------------------------------------------------------------------#
@@ -155,7 +135,8 @@ print(boruta_signif)
 
 #Subset Final Variables
 finalvars <- allnumeric[,c(2,3,7,8,11:13,16)]
-finalcormatrix  <- cor(finalvars)
+finalcormatrix  <- corrplot(cor(finalvars), type = "upper", method = "number")
+
 
 #----------------------------------------------------------------------#
 
@@ -184,9 +165,28 @@ finalvarsmodel <- lm(Mins2Secs~., finalvars)
 summary(finalvarsmodel)
 #Most vars behaving in the expected manner, with the exception of Mid-Engine, Cylinders, Torque
 
-#Model Performance
+#Making clusters for different archetypes of cars and determining the optimal amount of clusters
+library(NbClust)
+res.nbclust <- NbClust(finalvars, distance = "euclidean", min.nc = 2, max.nc = 10, method = "complete", index ="all") #Three was the ideal number
+km3f <- kmeans(finalvars, centers = 3, nstart = 100)
+km3f
+finalvarscluster <- finalvars
+finalvarscluster$cluster <- km3f$cluster
 
+#Modified Model, MLR with final vars+clusters
+finalvarsmodelcluster <- lm(Mins2Secs~., finalvarscluster)
+summary(finalvarsmodelcluster)
 
 #----------------------------------------------------------------------#
 
-#Making clusters for different archetypes of cars
+#Model Performance
+
+#Basic MLR
+plot(finalvarsmodel)
+difference = predict(finalvarsmodel) - finalvars$Mins2Secs
+plot(difference)
+
+#Modified MLR w/clusters
+plot(finalvarsmodelcluster)
+differencecluster = predict(finalvarsmodelcluster) - finalvars$Mins2Secs
+plot(differencecluster)
