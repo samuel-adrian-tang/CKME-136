@@ -78,12 +78,12 @@ library("olsrr")
 stepwisetime <- ols_step_both_p(alltimeMLR)
 stepwisetime #Horsepower, Year, Weight, Supercharger, MidEngine, AWD
 
-#---Boruta---, results were that Year, Weight, Horsepower, Torque, KGperHP, Cylinders, FWD, and MidEngine were significant to time
+#---Boruta--- 
 #install.packages("Boruta")
 library(Boruta)
 Borutatime <- Boruta(Mins2Secs~Year+Weight+Turbocharger+Supercharger+Hybrid+Horsepower+Torque+Manual_Transmission+KGperHP+Cylinders+AWD+RWD+FWD+MidEngine+RearEngine+FrontEngine, allnumeric)
 boruta_signif <- getSelectedAttributes(Borutatime, withTentative = TRUE)
-print(boruta_signif) 
+print(boruta_signif) #Results were that Year, Weight, Horsepower, Torque, KGperHP, Cylinders, FWD, and MidEngine were significant to time
 
 #FEATURING Horsepower and Weight, BUT NOT INCLUDING KGperHP (This is to combat multicollinearity)
 #---Basic Multiple Linear Regression---
@@ -91,17 +91,13 @@ mosttimeMLR <- lm(Mins2Secs~Year+Weight+Turbocharger+Supercharger+Hybrid+Horsepo
 summary(mosttimeMLR) #Year(**), Weight(***), Supercharger(*), Horsepower(***), Cylinders(*), MidEngine(*)
 
 #---Stepwise Regression---
-#install.packages("olsrr")
-library("olsrr")
-stepwisetime <- ols_step_both_p(mosttimeMLR)
-stepwisetime #Horsepower, Year, Weight, Supercharger, MidEngine, AWD
+stepwisetimemost <- ols_step_both_p(mosttimeMLR)
+stepwisetimemost #Horsepower, Year, Weight, Supercharger, MidEngine, AWD
 
 #---Boruta---
-#install.packages("Boruta")
-library(Boruta)
-Borutatime <- Boruta(Mins2Secs~Year+Weight+Turbocharger+Supercharger+Hybrid+Horsepower+Torque+Manual_Transmission+Cylinders+AWD+RWD+FWD+MidEngine+RearEngine+FrontEngine, allnumeric)
-boruta_signif <- getSelectedAttributes(Borutatime, withTentative = TRUE)
-print(boruta_signif) #Results were that Year, Weight, Horsepower, Torque, Cylinders, FWD, MidEngine, and FrontEngine were significant to time
+Borutatimemost <- Boruta(Mins2Secs~Year+Weight+Turbocharger+Supercharger+Hybrid+Horsepower+Torque+Manual_Transmission+Cylinders+AWD+RWD+FWD+MidEngine+RearEngine+FrontEngine, allnumeric)
+boruta_signif_most <- getSelectedAttributes(Borutatimemost, withTentative = TRUE)
+print(boruta_signif_most) #Results were that Year, Weight, Horsepower, Torque, Cylinders, FWD, MidEngine, and FrontEngine were significant to time
 
 #FEATURING KGperHP, BUT NOT INCLUDING Horsepower or Weight (This is to combat multicollinearity)
 #---Basic Multiple Linear Regression---
@@ -109,24 +105,20 @@ sometimeMLR <- lm(Mins2Secs~Year+Turbocharger+Supercharger+Hybrid+Torque+Manual_
 summary(sometimeMLR) #Year(***), Turbocharger(.), Supercharger(*), KGperHP(***), Cylinders(*), MidEngine(*)
 
 #---Stepwise Regression---
-#install.packages("olsrr")
-library("olsrr")
-stepwisetime <- ols_step_both_p(sometimeMLR)
-stepwisetime #KGperHP, Year, Cylinders, Supercharger
+stepwisetimesome <- ols_step_both_p(sometimeMLR)
+stepwisetimesome #KGperHP, Year, Cylinders, Supercharger
 
-#---Boruta---, results were that Year, Torque, KGperHP, Cylinders, FWD, MidEngine and FrontEngine, were significant to time
-#install.packages("Boruta")
-library(Boruta)
-Borutatime <- Boruta(Mins2Secs~Year+Turbocharger+Supercharger+Hybrid+Torque+Manual_Transmission+KGperHP+Cylinders+AWD+RWD+FWD+MidEngine+RearEngine+FrontEngine, allnumeric)
-boruta_signif <- getSelectedAttributes(Borutatime, withTentative = TRUE)
-print(boruta_signif)
+#---Boruta--- 
+Borutatimesome <- Boruta(Mins2Secs~Year+Turbocharger+Supercharger+Hybrid+Torque+Manual_Transmission+KGperHP+Cylinders+AWD+RWD+FWD+MidEngine+RearEngine+FrontEngine, allnumeric)
+boruta_signif_some <- getSelectedAttributes(Borutatime, withTentative = TRUE)
+print(boruta_signif_some) #Results were that Year, Torque, KGperHP, Cylinders, FWD, MidEngine and FrontEngine, were significant to time
 
 #----------------------------------------------------------------------#
 
 #If we compare the results of the correlation chart and the Boruta/Stepwise Regression, we are left with the variables: KGperHP (or Horsepower and Weight), Cylinders, MidEngine, these variables were significant in both tests. The following were only significant in either: Year, Torque, Hybrid, AWD, FWD.
 
 #Year is important as it captures some technological advances that are too difficult to capture with just the variables given (+)
-#Torque affects accelaration significantly, even more so than Horsepower or HPperKG, must be included (+)
+#Torque affects acceleration significantly, even more so than Horsepower or HPperKG, must be included (+)
 #Hybrid will not be considered as there are only two examples, there is just too limited examples (-)
 #AWD has been known to improve traction and acceleration, it will be added (+)
 #FWD will not be considered as there are only three examples, there is just too limited examples (-)
@@ -189,8 +181,12 @@ summary(finalvarsclustermodel)
 plot(finalvarsmodel)
 difference = predict(finalvarsmodel) - finalvars$Mins2Secs
 plot(difference)
+summary(finalvarsmodel)
 
 #Modified MLR w/clusters
-plot(finalvarsmodelcluster)
-differencecluster = predict(finalvarsmodelcluster) - finalvars$Mins2Secs
+plot(finalvarsclustermodel)
+differencecluster = predict(finalvarsclustermodel) - finalvars$Mins2Secs
 plot(differencecluster)
+summary(finalvarsclustermodel)
+
+
