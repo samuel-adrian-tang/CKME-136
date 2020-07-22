@@ -1,21 +1,11 @@
 To Do:
-1.  AIC or ____ for stepwise reduction
-    A) Test the stability (overfitting/underfitting), accuracy/effectiveness (need 3 different measurements)
-3.	Try using different modelling techniques --> Random Forest, Decision Tree, etc.
-    A) Try to improve? Scrape additional cars, cross-validate/folds. Manually handicap/augment some variables?
-    B) RESEARCH CROSS-VALIDATION METHODS
-4.  Create RMarkdown file and look at project timeline file
-    
-    
 Main Research Questions?
 1. What can positively affect a car's laptime?
 A) Does Horsepower?
 B) Does Weight?
 C) Does Year?
 
-
-    
-    - use the asteriks symbol instead which could help with pair-wise (instead of plus sign)
+Use the asteriks symbol instead which could help with pair-wise (instead of plus sign)
     
 
 Final: Interpretation and visualizations
@@ -36,9 +26,12 @@ Multicollinearity <- is multiple LINEAR regression the best/correct way to do th
 Why clustering? Body style, and other stuff can be useful for this.....clustering helps to capture some of the stuff that may put some cars in the same class. 
     This is what the auto industry naturally does anyways. Allows for better comparison?
     Not that it is apples to oranges....but more like grapefruit to oranges?
+    Create clusters according to time? (benchmarking)
 Clustering will help with outlier treatment, Pros and Cons of removing outliers:
     Cars are designed and exist in extremes, it is not unusual perse to have an outlier
     May employ traditional outlier treatment as a hypertuning operation... Must compare performance
+Model Analysis
+    Notice the difference in errors between high ranking and low ranking, meaning it is more like a second difference function
 
 TABLEAU: 
 
