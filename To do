@@ -19,6 +19,7 @@ Multiple methods for feature selection, should employ more methods
     https://www.machinelearningplus.com/machine-learning/feature-selection/
 Multiple methods for modeling, MLR, Stepwise, not linear????
 Dummy variable trap <- still want to see individual effects of each though.....Drivetrain and Engine Augmentation and Engine Layout
+Scaling! Applied to finalvars --> Year, Weight, HP, Torque, and Cylinders
 Multicollinearity <- is multiple LINEAR regression the best/correct way to do this? Does it violate assumptions? Heteroskedacity
     https://sphweb.bumc.bu.edu/otlt/MPH-Modules/BS/R/R5_Correlation-Regression/R5_Correlation-Regression4.html
     https://www.statisticssolutions.com/assumptions-of-multiple-linear-regression/
@@ -32,6 +33,7 @@ Clustering will help with outlier treatment, Pros and Cons of removing outliers:
     May employ traditional outlier treatment as a hypertuning operation... Must compare performance
 Model Analysis
     Notice the difference in errors between high ranking and low ranking, meaning it is more like a second difference function
+    
 
 TABLEAU: 
 
