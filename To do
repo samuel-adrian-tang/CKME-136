@@ -5,13 +5,14 @@ A) Does Horsepower?
 B) Does Weight?
 C) Does Year?
 
-Use the asteriks symbol instead which could help with pair-wise (instead of plus sign)
-    
+LAB 8 -> testing the model and graphing the model
+
 
 Final: Interpretation and visualizations
 -----------------------------------------
 
-REPORT: Issues, decisions, tuning, process, outcome and interpretations
+REPORT: Issues, decisions, tuning, process, outcome and interpretations (PUT LINK IN FINAL REPORT) 
+
 Must explain differences between time and position, time is objective and the standard of measurement, position is relative <- May lead to overfitting
 Why was Spearman chosen? Parametric versus non-parametric
     https://www.statisticssolutions.com/correlation-pearson-kendall-spearman/
@@ -33,7 +34,11 @@ Clustering will help with outlier treatment, Pros and Cons of removing outliers:
     May employ traditional outlier treatment as a hypertuning operation... Must compare performance
 Model Analysis
     Notice the difference in errors between high ranking and low ranking, meaning it is more like a second difference function
-    
+Model Evaluation
+    RMSE - adding more weight to outliers
+    R squared/adjusted R squared
+    mean absolute error - not concerned with outliers
+    change AIC to BIC (bayesian information criterion)
 
 TABLEAU: 
 
