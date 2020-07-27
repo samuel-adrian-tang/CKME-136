@@ -1,0 +1,307 @@
+---
+title: "CKME 136 - Laptimes at the Nurburgring"
+author: "Samuel Tang"
+date: "16/07/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Importing the data.
+Please note, to run the code, you must adjust wd accordingly. The data that is on GitHub is more than just this basic .csv file.
+
+```{r}
+getwd() 
+setwd("C:\\Users\\Samuel Tang\\Desktop\\CKME 136\\Dataset")
+cleandata <- read.csv("lap_times (edited).csv")
+```
+
+Exploring the data.
+
+```{r}
+str(cleandata)
+head(cleandata) 
+tail(cleandata)
+nrow(cleandata)
+ncol(cleandata)
+```
+
+In order to better analyze the data, Time was converted into an easier, more comparable, measure (seconds).
+
+```{r}
+library(lubridate)
+cleandata$Mins2Secs <- period_to_seconds(ms(cleandata$Time))
+```
+
+Below is a basic summary and visualization of all the numeric variables, plotted against time (Mins2Secs). Mins2Secs (which is time,) is our dependent variable. As expected, there are some weak and some strong relationships.
+
+Comments on each of the variables are noted below in the code. In summary, Year, Weight, Horsepower, Torque, KGperHP, and Cylinders all appear to have a relationship with Time. The other variables have no explicit or obvious relationship with Time.
+
+```{r}
+summary(cleandata)
+plot(cleandata$Year, cleandata$Mins2Secs) #negative relationship, represents other technological improvements, difficult to dissect
+plot(cleandata$Weight, cleandata$Mins2Secs) #weak positive relationship - Maybe important for clusters? May be useful to group into different segments
+plot(cleandata$Turbocharger, cleandata$Mins2Secs) #no clear relationship - must compare the three engine augmentation styles, Turbo, Super, Hybrid (Position, Time, Weight, HP, Torque)
+plot(cleandata$Supercharger, cleandata$Mins2Secs) #no clear relationship - must compare the three engine augmentation styles, Turbo, Super, Hybrid (Position, Time, Weight, HP, Torque)
+plot(cleandata$Hybrid, cleandata$Mins2Secs) #no clear relationship, only two examples - Need to explain advantages (torque+HP > weight?, prove by kg/hp?)
+plot(cleandata$Horsepower, cleandata$Mins2Secs) #weak negative trend - why is it not as obvious/strong?
+plot(cleandata$Torque, cleandata$Mins2Secs) #weak negative trend - why is it not as obvious/strong?
+plot(cleandata$Manual_Transmission, cleandata$Mins2Secs) #Manual transmission may increase time, investigate averages for groups
+plot(cleandata$KGperHP, cleandata$Mins2Secs) #Positive trend, resembles a logarithmic function
+plot(cleandata$Cylinders, cleandata$Mins2Secs) #Weak negative trend, investigate averages for each group (this is a derivative of powertrain)
+```
+
+Categorical variables were created to represent different examples of "Drivetrain" and "Engine_Layout". Namely: AWD,RWD,FWD,MidEngine, FrontEngine, RearEngine. All will be represented for the time being, and one shall be removed later to avoid the Dummy-variable trap.
+
+The converted variables as well as all other numeric attributes will be subset to a new dataframe for further analysis.
+
+```{r}
+cleandata$AWD = 0
+cleandata$AWD[which(grepl("AWD", cleandata$Drivetrain))] = 1
+cleandata$RWD = 0
+cleandata$RWD[which(grepl("RWD", cleandata$Drivetrain))] = 1
+cleandata$FWD = 0
+cleandata$FWD[which(grepl("FWD", cleandata$Drivetrain))] = 1
+cleandata$MidEngine = 0
+cleandata$MidEngine[which(grepl("Mid-Engine", cleandata$Engine_Layout))] = 1
+cleandata$RearEngine = 0
+cleandata$RearEngine[which(grepl("Rear-Engine", cleandata$Engine_Layout))] = 1
+cleandata$FrontEngine = 0
+cleandata$FrontEngine[which(grepl("Front-Engine", cleandata$Engine_Layout))] = 1
+
+allnumeric <- cleandata[,c(1,2,6:9,12,13,16:25)]
+```
+
+It is hard to visualize if there is a relationship between the categorical variables; a Chi-Square Test will be performed to see if there are any statistical differences among the factors, when put against Mins2Secs (Time).
+
+Although not conclusive, it appears that Year, Cylinders, and Drivetrain somewhat affect Mins2Secs. We can explore those differences further below.
+
+```{r}
+chisq.test(cleandata$Year, cleandata$Mins2Secs)
+chisq.test(cleandata$Manual_Transmission, cleandata$Mins2Secs)
+chisq.test(cleandata$Turbocharger, cleandata$Mins2Secs)
+chisq.test(cleandata$Supercharger, cleandata$Mins2Secs)
+chisq.test(cleandata$Hybrid, cleandata$Mins2Secs)
+chisq.test(cleandata$Cylinders, cleandata$Mins2Secs)
+chisq.test(cleandata$Drivetrain, cleandata$Mins2Secs)
+chisq.test(cleandata$Engine_Layout, cleandata$Mins2Secs)
+```
+
+Correlation analysis was performed using the Spearman method as the variables were not normally distributed.
+
+According to chart, the p-values indicate Hybrid(***), Horsepower(***), Torque(***), KGperHP(***), Cylinders(*), AWD(*), FWD(*), and MidEngine(*) are significantly correlated to Time (Mins2Secs). 
+
+Another purpose is to check if any variables are highly correlated with one another, this will help to combat multicollinearity.
+
+```{r}
+cormatrix  <- cor(allnumeric)
+#install.packages("PerformanceAnalytics")
+library(PerformanceAnalytics)
+chart.Correlation(cormatrix, method = "spearman")
+```
+
+Other Feature-Selection Techniques were performed for dimensionality reduction purposes.
+Three tests are here employed (MLR, Stepwise, Boruta) below, more can be done later.
+
+The general consensus is that Year, Weight (or KGperHP), Horsepower (or KGperHP), Cylinders, and MidEngine are the most valuable indicators. 
+
+```{r}
+#FEATURING ALL VARIABLES, INCLUDING Horsepower, Weight, KGperHP
+#---Basic Multiple Linear Regression---
+alltimeMLR <- lm(Mins2Secs~Year+Weight+Turbocharger+Supercharger+Hybrid+Horsepower+Torque+Manual_Transmission+KGperHP+Cylinders+AWD+RWD+FWD+MidEngine+RearEngine+FrontEngine, allnumeric)
+summary(alltimeMLR) #Year(**), Weight(*), Supercharger(*), Horsepower(**), Cylinders(.), MidEngine(*)
+
+#---Stepwise Regression---
+#install.packages("olsrr")
+library("olsrr")
+stepwisetime <- ols_step_both_p(alltimeMLR)
+stepwisetime #Horsepower, Year, Weight, Supercharger, MidEngine, AWD
+
+#---Boruta--- 
+#install.packages("Boruta")
+library(Boruta)
+Borutatime <- Boruta(Mins2Secs~Year+Weight+Turbocharger+Supercharger+Hybrid+Horsepower+Torque+Manual_Transmission+KGperHP+Cylinders+AWD+RWD+FWD+MidEngine+RearEngine+FrontEngine, allnumeric)
+boruta_signif <- getSelectedAttributes(Borutatime, withTentative = TRUE)
+print(boruta_signif) #Results were that Year, Weight, Horsepower, Torque, KGperHP, Cylinders, FWD, and MidEngine were significant to time
+
+#FEATURING Horsepower and Weight, BUT NOT INCLUDING KGperHP (This is to combat multicollinearity)
+#---Basic Multiple Linear Regression---
+mosttimeMLR <- lm(Mins2Secs~Year+Weight+Turbocharger+Supercharger+Hybrid+Horsepower+Torque+Manual_Transmission+Cylinders+AWD+RWD+FWD+MidEngine+RearEngine+FrontEngine, allnumeric)
+summary(mosttimeMLR) #Year(**), Weight(***), Supercharger(*), Horsepower(***), Cylinders(*), MidEngine(*)
+
+#---Stepwise Regression---
+stepwisetimemost <- ols_step_both_p(mosttimeMLR)
+stepwisetimemost #Horsepower, Year, Weight, Supercharger, MidEngine, AWD
+
+#---Boruta---
+Borutatimemost <- Boruta(Mins2Secs~Year+Weight+Turbocharger+Supercharger+Hybrid+Horsepower+Torque+Manual_Transmission+Cylinders+AWD+RWD+FWD+MidEngine+RearEngine+FrontEngine, allnumeric)
+boruta_signif_most <- getSelectedAttributes(Borutatimemost, withTentative = TRUE)
+print(boruta_signif_most) #Results were that Year, Weight, Horsepower, Torque, Cylinders, FWD, MidEngine, and FrontEngine were significant to time
+
+#FEATURING KGperHP, BUT NOT INCLUDING Horsepower or Weight (This is to combat multicollinearity)
+#---Basic Multiple Linear Regression---
+sometimeMLR <- lm(Mins2Secs~Year+Turbocharger+Supercharger+Hybrid+Torque+Manual_Transmission+KGperHP+Cylinders+AWD+RWD+FWD+MidEngine+RearEngine+FrontEngine, allnumeric)
+summary(sometimeMLR) #Year(***), Turbocharger(.), Supercharger(*), KGperHP(***), Cylinders(*), MidEngine(*)
+
+#---Stepwise Regression---
+stepwisetimesome <- ols_step_both_p(sometimeMLR)
+stepwisetimesome #KGperHP, Year, Cylinders, Supercharger
+
+#---Boruta--- 
+Borutatimesome <- Boruta(Mins2Secs~Year+Turbocharger+Supercharger+Hybrid+Torque+Manual_Transmission+KGperHP+Cylinders+AWD+RWD+FWD+MidEngine+RearEngine+FrontEngine, allnumeric)
+boruta_signif_some <- getSelectedAttributes(Borutatime, withTentative = TRUE)
+print(boruta_signif_some) #Results were that Year, Torque, KGperHP, Cylinders, FWD, MidEngine and FrontEngine, were significant to time
+```
+
+If we compare the results of the correlation chart, the Chi-Square Tests, and the Boruta/Stepwise Regression, we are consistently left with the variables: KGperHP (or Horsepower and Weight), Cylinders, and MidEngine; these variables were significant in all tests. The following were only significant in either: Year, Torque, Hybrid, AWD, FWD.
+
+Year is important as it captures some technological advances that are too difficult to capture with just the variables given (+)
+Torque affects acceleration significantly, even more so than Horsepower or HPperKG, must be included (+)
+AWD has been known to improve traction and acceleration, it will be added (+)
+Hybrid will not be considered as there are only two examples, there is just too few examples (-)
+FWD will not be considered as there are only three examples, there is just too few examples (-)
+
+The final list of variables to be considered (at this point) will be Horsepower, Weight, Cylinders, MidEngine, Year, Torque, and AWD. A total of seven variables.
+
+The following is how we subset the Final Variables; as well as a basic correlation visualization.
+
+```{r}
+finalvars <- allnumeric[,c(2,3,7,8,11:13,16)]
+library(corrplot)
+finalcormatrix  <- corrplot(cor(finalvars), type = "upper", method = "number")
+```
+
+Comment Investigation - Looking at the effects of different factors upon other variables
+
+Cylinders (4, 6, 8, 10, 12)
+The newer cars feature fewer cylinders (4,6,8), HP and torque increases as cylinders increase, no noticeable impact on time, weight increases with cylinders, more mid-engine as cylinders also increase.
+
+Drivetrain (AWD, RWD, FWD)
+AWD has best HP, Torque, and time. Suffers in the Weight category (more complicated system/setup). More likely to be Mid-Engine with more Cylinders. Something to note... V10s appear to be an exception, some outliers exist here as well as fewer models (10), not a popular engine to make.
+
+Engine Layout (Mid, Front, Rear)
+Mid-Engine rates better on almost every metric, advantages are very clear.
+
+It is important to check the nature of these relationships because we are modeling using a Multiple Linear Regression.
+Torque, Year, Horsepower appear to be linear in nature and negatively correlated with Time.
+Weight, appear to be linear in nature and positively correlated with Time.
+
+```{r}
+CylindersComparison <- by(allnumeric[,c(2,3,7,8,11:13,16)], allnumeric$Cylinders, summary)
+DrivetrainComparison <- by(cleandata[,c(2,6,12,13,18:20,23)], cleandata$Drivetrain, summary)
+EngineLayoutComparison <- by(cleandata[,c(2,6,12,13,18:20,23)], cleandata$Engine_Layout, summary)
+
+CylindersComparison
+DrivetrainComparison
+EngineLayoutComparison
+
+plot(cleandata$Year, cleandata$Mins2Secs)
+plot(cleandata$Weight, cleandata$Mins2Secs)
+plot(cleandata$Horsepower, cleandata$Mins2Secs)
+plot(cleandata$Torque, cleandata$Mins2Secs)
+```
+
+After experimenting with and without scaling, I thought it best to scale Years, Weight, Horsepower, Torque, and Cylinders. The previous models would have to compensate far too much to accommodate Year+Weight (1000s), HP+Torque (100s) and then Cylinders (4 to 12).
+
+```{r}
+finalvars[c(1:5)] <- lapply(finalvars[c(1:5)], function(x) c(scale(x)))
+```
+
+Two initial models are to be explored here: Basic MLR w/ final vars (1), Modified MLR Model w/ final vars and clusters (2)
+
+1. Most vars behaving in the expected manner, with the exception of Mid-Engine, Cylinders, Torque (positive instead of negative)
+2. Most vars behaving in the expected manner, with the exception of Mid-Engine, Cylinders (positive instead of negative)
+
+We created different clusters for different archetypes of cars and determined that the optimal number of clusters is four, this was determined using the NbClust package.
+
+Previously, before scaling, the clusters seemed to focus on all the elements of the car. However, after scaling, it seems it have assigned cluster groups primarily based off of time. This actually makes a lot of sense intuitively, primarily because companies would use the laptime to benchmark their cars!
+
+```{r}
+finalvarsmodel <- lm(Mins2Secs~Year+Weight+Horsepower+Torque+Cylinders+AWD+MidEngine, finalvars)
+summary(finalvarsmodel)
+
+library(NbClust)
+res.nbclust <- NbClust(finalvars, distance = "euclidean", min.nc = 2, max.nc = 10, method = "complete", index ="all")
+km4f <- kmeans(finalvars, centers = 4, nstart = 100)
+km4f
+finalvarscluster <- finalvars
+finalvarscluster$cluster1 <- km4f$cluster
+finalvarscluster$cluster2 <- 0
+finalvarscluster$cluster3 <- 0
+finalvarscluster$cluster3[which(finalvarscluster$cluster1 == 3)] <- 1
+finalvarscluster$cluster2[which(finalvarscluster$cluster1 == 2)] <- 1
+finalvarscluster$cluster1[which(finalvarscluster$cluster1 != 1)] <- 0
+
+finalvarsclustermodel <- lm(Mins2Secs~Year+Weight+Horsepower+Torque+Cylinders+AWD+MidEngine+cluster1+cluster2+cluster3, finalvarscluster)
+summary(finalvarsclustermodel)
+```
+
+Visualizing the models:
+1A) MLR using finalvars
+1B) MLR using finalvarscluster
+
+```{r}
+plot(finalvarsmodel)
+plot(finalvarsclustermodel)
+```
+
+Model Performance for 1A) MLR using finalvars.
+We employed R-squared (adjusted R-squared), RMSE, Mean Absolute Error, Akaikes Information Criterion (AIC).
+
+```{r}
+summary(finalvarsmodel) #R-squared: 0.6398, 0.6053 (adjusted)
+
+rn_train <- sample(nrow(finalvars), floor(nrow(finalvars)*0.7))
+train <- finalvars[rn_train,]
+test <- finalvars[-rn_train,]
+
+model_mlr <- lm(Mins2Secs~Year+Weight+Horsepower+Torque+Cylinders+AWD+MidEngine, data=train) 
+prediction <- predict(model_mlr, interval="prediction", newdata =test)
+
+errors <- prediction[,"fit"] - test$Mins2Secs
+hist(errors)
+
+rmse <- sqrt(sum((errors)^2)/nrow(test))
+rel_change <- abs(errors) / test$Mins2Secs
+pred5 <- table(rel_change<0.05)["TRUE"] / nrow(test)
+table(rel_change)
+paste("RMSE:", rmse) #11.56290 (for this instance)
+paste("PRED(5):", pred5) #92% of cases with less than 5% error (for this instance)
+
+#install.packages("caret")
+library(caret)
+MAE(prediction, test$Mins2Secs) #14.731 (for this instance)
+
+AIC(model_mlr) #404.9688 (for this instance)
+```
+
+Model Performance for 1B) MLR using finalvarscluster.
+We employed R-squared (adjusted R-squared), RMSE, Mean Absolute Error, Akaikes Information Criterion (AIC).
+
+```{r}
+summary(finalvarsclustermodel) #R-squared: 0.9264, 0.9159 (adjusted)
+
+rn_train_cluster <- sample(nrow(finalvarscluster), floor(nrow(finalvarscluster)*0.7))
+traincluster <- finalvarscluster[rn_train_cluster,]
+testcluster <- finalvarscluster[-rn_train_cluster,]
+
+
+model_mlr_cluster <- lm(Mins2Secs~Year+Weight+Horsepower+Torque+Cylinders+AWD+MidEngine+cluster1+cluster2+cluster3, data=traincluster) 
+prediction_cluster <- predict(model_mlr_cluster, interval="prediction", newdata =testcluster)
+
+errors_cluster <- prediction_cluster[,"fit"] - testcluster$Mins2Secs
+hist(errors_cluster)
+
+rmse_cluster <- sqrt(sum((errors_cluster)^2)/nrow(testcluster))
+rel_change_cluster <- abs(errors_cluster) / testcluster$Mins2Secs
+pred5clust <- table(rel_change<0.05)["TRUE"] / nrow(testcluster)
+table(rel_change_cluster)
+paste("RMSE:", rmse_cluster) #6.0049 (for this instance)
+paste("PRED(5):", pred5clust) #92% of cases with less than 5% error (for this instance)
+
+MAE(prediction_cluster, testcluster$Mins2Secs) #6.907 (for this instance)
+
+AIC(model_mlr_cluster) #317.5095 (for this instance)
+```

@@ -1,0 +1,55 @@
+---
+title: "Extra Code"
+author: "Samuel Tang"
+date: "27/07/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Extra code:
+
+Chi-Square equivalent for the numeric variables
+
+
+Principal component analysis - Should we keep...? Is it for not necessary since we have other ways for dimensionality reduction
+
+By performing the PCA test, we can observe the standard deviation and the percentage of variance explained at each principal component level. 
+
+Using the threshold of 1 standard deviation, we arrive between component 6 and 7; which can cumulatively explain ~82% to 87% of the variance. 
+
+```{r}
+pca_allnumeric <- princomp(allnumeric,cor=TRUE, score=TRUE)
+summary(pca_allnumeric)
+plot(pca_allnumeric)
+```
+
+Cluster Experiment
+
+```{r}
+set.seed(100)
+library(NbClust)
+library(factoextra)
+
+fviz_nbclust(finalvars, kmeans, method = "wss", k.max = 10) + theme_minimal() + ggtitle("the Elbow Method")
+fviz_nbclust(allnumeric, kmeans, method = "wss", k.max = 10) + theme_minimal() + ggtitle("the Elbow Method")
+
+gap_statfinal <- clusGap(finalvars, kmeans, nstart = 100, K.max = 10, B = 50)
+gap_statallnumeric <- clusGap(allnumeric, kmeans, nstart = 100, K.max = 10, B = 50)
+fviz_gap_stat(gap_statfinal) + theme_minimal() + ggtitle("fviz_gap_stat: Gap Statistic")
+fviz_gap_stat(gap_statallnumeric) + theme_minimal() + ggtitle("fviz_gap_stat: Gap Statistic")
+
+fviz_nbclust(finalvars, kmeans, method = "silhouette", k.max = 10) + theme_minimal() + ggtitle("The Silhouette Plot")
+fviz_nbclust(allnumeric, kmeans, method = "silhouette", k.max = 10) + theme_minimal() + ggtitle("The Silhouette Plot")
+
+res.nbclust <- NbClust(finalvars, distance = "euclidean",
+                       min.nc = 2, max.nc = 10, 
+                       method = "complete", index ="all")
+res.nbclust <- NbClust(allnumeric, distance = "euclidean",
+                       min.nc = 2, max.nc = 10, 
+                       method = "complete", index ="all")
+```
+
+Try using diff modelling techniques --> K nearest neighbors prediction (TueSection_Lab 11_Solutions)
