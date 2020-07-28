@@ -37,6 +37,7 @@ Model Evaluation
     R squared/adjusted R squared
     mean absolute error - not concerned with outliers
     change AIC to BIC (bayesian information criterion)
+    http://www.sthda.com/english/articles/38-regression-model-validation/158-regression-model-accuracy-metrics-r-square-aic-bic-cp-and-more/
 
 TABLEAU: 
 
